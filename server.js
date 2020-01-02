@@ -18,6 +18,7 @@ const db = require("./config/keys").mongoURI;
 
 const users = require("./routes/api/users");
 const posts = require("./routes/api/posts");
+const maraphons = require("./routes/api/maraphons");
 
 //connect to MongoDB
 mongoose
@@ -43,6 +44,7 @@ app.use(passport.session());
 // Use routes
 app.use("/api/users", users);
 app.use("/api/posts", posts);
+app.use("/api/maraphons", maraphons);
 
 //to use https with ssl
 const httpsOptions = {

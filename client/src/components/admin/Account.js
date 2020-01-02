@@ -1,10 +1,12 @@
 import React from 'react';
-import { Descriptions } from 'antd';
-import { PageHeader } from 'antd';
-import { Layout, Card } from 'antd';
+import { useSelector } from "react-redux";
+import { Descriptions, PageHeader, Layout, Card } from 'antd';
+import Admin from "../admin/Admin"
 const { Content } = Layout;
 
-function Account() {
+function Account(props) {
+  const name = useSelector(state => state.auth.user.name);
+  const email = useSelector(state => state.auth.user.email);
   // const [state, setState] = useState({
   //   maraphonName: "",
   //   maraphonDescription: "",
@@ -33,7 +35,7 @@ function Account() {
 
 
   return (
-    <React.Fragment>
+    <Admin history={props.history}>
       <PageHeader
         // style={{
         //   border: '1px solid rgb(235, 237, 240)',
@@ -57,9 +59,9 @@ function Account() {
         // }}
         >
           <Descriptions>
-            <Descriptions.Item label="Имя">Марта Желтонян</Descriptions.Item>
-            {/* <Descriptions.Item label="Telephone">1810000000</Descriptions.Item>
-            <Descriptions.Item label="Live">Hangzhou, Zhejiang</Descriptions.Item>
+            <Descriptions.Item label="Имя">{name}</Descriptions.Item>
+            <Descriptions.Item label="Email">{email}</Descriptions.Item>
+            {/* <Descriptions.Item label="Live">Hangzhou, Zhejiang</Descriptions.Item>
             <Descriptions.Item label="Remark">empty</Descriptions.Item>
             <Descriptions.Item label="Address">
               No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China
@@ -67,8 +69,7 @@ function Account() {
           </Descriptions>
         </Card>
       </Content>
-
-    </React.Fragment>
+    </Admin>
   );
 }
 

@@ -16,6 +16,7 @@ import {
 // import { Collapse } from 'antd';
 import { Row, Col } from 'antd';
 import { PageHeader } from 'antd';
+import Admin from '../admin/Admin';
 // const { Header, Content, Sider } = Layout;
 const { Content } = Layout;
 
@@ -24,7 +25,7 @@ const { Content } = Layout;
 const { TextArea, } = Input;
 // const { Title } = Typography;
 
-function Add() {
+function Add(props) {
   const [state, setState] = useState({
     type: "text",
     trainings: [{
@@ -147,7 +148,7 @@ function Add() {
   // }
 
   return (
-    <React.Fragment>
+    <Admin history={props.history}>
       <PageHeader
         // style={{
         //   border: '1px solid rgb(235, 237, 240)',
@@ -236,7 +237,7 @@ function Add() {
         </Col>
       </Row>
 
-    </React.Fragment>
+    </Admin>
   );
 }
 

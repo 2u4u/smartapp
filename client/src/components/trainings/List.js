@@ -6,10 +6,11 @@ import { PageHeader } from 'antd';
 import {
   Card,
 } from 'antd';
+import Admin from '../admin/Admin';
 
 // const { Meta } = Card;
 
-function List() {
+function List(props) {
   // const [state, setState] = useState({
   //   trainings: [],
   // })
@@ -29,7 +30,7 @@ function List() {
   ];
 
   return (
-    <React.Fragment>
+    <Admin history={props.history}>
       <PageHeader
         // style={{
         //   border: '1px solid rgb(235, 237, 240)',
@@ -139,7 +140,7 @@ function List() {
           </Link>
         </Col>
       </Row>
-    </React.Fragment>
+    </Admin>
   );
 }
 

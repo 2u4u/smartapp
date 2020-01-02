@@ -1,6 +1,7 @@
 import React from 'react';
 import { PageHeader } from 'antd';
 import { Table, Layout } from 'antd';
+import Admin from '../admin/Admin';
 const { Content } = Layout;
 
 const routes = [
@@ -18,7 +19,7 @@ const routes = [
   },
 ];
 
-function News() {
+function News(props) {
   const columns = [
     { title: 'Имя', dataIndex: 'name', key: 'name' },
     { title: 'Задание', dataIndex: 'age', key: 'age' },
@@ -56,7 +57,7 @@ function News() {
   ];
 
   return (
-    <React.Fragment>
+    <Admin history={props.history}>
       <PageHeader
         breadcrumb={{ routes }}
         title="Новости марафона"
@@ -73,7 +74,7 @@ function News() {
           dataSource={data}
         />
       </Content>
-    </React.Fragment>
+    </Admin>
   );
 }
 

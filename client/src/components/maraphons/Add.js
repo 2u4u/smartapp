@@ -1,104 +1,88 @@
 import React, { useState } from 'react';
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, convertToRaw } from 'draft-js';
+import { useDispatch, useSelector } from "react-redux";
 // import { stateToHTML } from 'draft-js-export-html';
 
-import {
-  Form,
-  Input,
-  Select,
-  Typography,
-  Icon,
-  Layout
-} from 'antd';
-import { Row, Col, PageHeader, DatePicker } from 'antd';
+import { addMaraphon } from "../../actions/maraphonAction";
+import { Button, Form, Input, Select, Typography, Icon, Layout, Row, Col, PageHeader, DatePicker } from 'antd';
+
+import Admin from '../admin/Admin';
 
 const { Title, Paragraph, Text } = Typography;
 const { Content } = Layout;
 const { Option } = Select;
 
-function Add() {
+function Add(props) {
+  const dispatch = useDispatch();
+  const name = useSelector(state => state.auth.user.name);
+  const userId = useSelector(state => state.auth.user.id);
+
   const [state, setState] = useState({
+    maraphonId: "",
     maraphonName: "",
     maraphonDescription: "",
     maraphonDuration: "",
+    maraphonGoal: ['a10', 'c12'],
     maraphonProgramm: "",
     maraphonCategory: "",
-    maraphonTarget: "",
     maraphonStartDate: "",
     maraphonPrice: ""
   });
 
-  const [editorState, setEditorState] = React.useState(
+  const [editorState, setEditorState] = useState(
     EditorState.createEmpty(),
   );
 
-  const handleKeyCommand = (command, editorState) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      setEditorState(editorState => ({ ...editorState, newState }));
-      return 'handled';
-    }
-    return 'not-handled';
-  }
-
-  const _onBoldClick = () => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
-  }
-
-  const _onItalicClick = () => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, 'ITALIC'));
-  }
-
-  const _onUnderlineClick = () => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'));
-  }
-
-  const styleMap = {
-    'STRIKETHROUGH': {
-      textDecoration: 'line-through',
-    },
-  };
-
-  const _onStrikeClick = () => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH'));
-  }
-
-  const _onRedo = () => {
-    setEditorState(EditorState.redo(editorState))
-  }
-
-  const _onUndo = () => {
-    setEditorState(EditorState.undo(editorState))
-  }
-
-  const handleMaraphonChange = (e) => {
-    let { name, value } = e.target;
-    setState(state => ({ ...state, [name]: value }));
-  }
+  const styleMap = { 'STRIKETHROUGH': { textDecoration: 'line-through' } };
+  const _onBoldClick = () => setEditorState(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
+  const _onItalicClick = () => setEditorState(RichUtils.toggleInlineStyle(editorState, 'ITALIC'));
+  const _onUnderlineClick = () => setEditorState(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'));
+  const _onStrikeClick = () => setEditorState(RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH'));
+  const _onRedo = () => setEditorState(EditorState.redo(editorState));
+  const _onUndo = () => setEditorState(EditorState.undo(editorState));
 
   const children = [];
   for (let i = 10; i < 36; i++) {
     children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
   }
 
-  function handleChange(value) {
-    console.log(`selected ${value}`);
+  const handleInputChange = (e) => {
+    let { name, value } = e.target;
+    setState(state => ({ ...state, [name]: value }));
+  }
+
+  function handleSelectChange(value) {
+    setState(state => ({ ...state, "maraphonGoal": value }));
   }
 
   const handleDateChange = (date, dateString) => {
     setState(state => ({ ...state, "maraphonStartDate": date }));
   }
 
-  const routes = [
-    {
-      path: 'first',
-      breadcrumbName: 'Список марафонов',
-    },
-  ];
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const newMaraphon = {
+      id: state.maraphonId, //when edit
+      user: userId,
+      name: state.maraphonName,
+      description: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+      duration: state.maraphonDuration,
+      category: state.maraphonCategory,
+      goal: state.maraphonGoal,
+      start_date: state.maraphonStartDate,
+      price: state.maraphonPrice,
+    };
+    dispatch(addMaraphon(newMaraphon));
+  }
+
+  const routes = [{
+    path: 'first',
+    breadcrumbName: 'Список марафонов',
+  },];
 
 
   return (
-    <React.Fragment>
+    <Admin history={props.history}>
       <PageHeader
         // onBack={() => null}
         breadcrumb={{ routes }}
@@ -106,20 +90,15 @@ function Add() {
       />
       <Row gutter={[16]} >
         <Col span={16}>
-          <Content
-            style={{
-              background: '#fff',
-              padding: 24
-            }}
-          >
-            <Form>
+          <Content style={{ background: '#fff', padding: 24 }}>
+            <Form onSubmit={onSubmit}>
               <Form.Item label="Название марафона">
                 <Input
                   type="text"
                   placeholder="Введите название марафона"
                   name="maraphonName"
                   value={state.maraphonName}
-                  onChange={(e) => handleMaraphonChange(e)}
+                  onChange={(e) => handleInputChange(e)}
                   style={{ width: '100%' }}
                 />
               </Form.Item>
@@ -138,7 +117,8 @@ function Add() {
                   customStyleMap={styleMap}
                   editorState={editorState}
                   onChange={setEditorState}
-                  handleKeyCommand={handleKeyCommand}
+                // onChange={(e) => handleEditorChange(e)}
+                // handleKeyCommand={handleKeyCommand}
                 />
               </Form.Item>
               <Form.Item label="Длительность марафона">
@@ -147,7 +127,7 @@ function Add() {
                   placeholder="Введите количество дней"
                   name="maraphonDuration"
                   value={state.maraphonDuration}
-                  onChange={(e) => handleMaraphonChange(e)}
+                  onChange={(e) => handleInputChange(e)}
                   style={{ width: '200px' }}
                   addonAfter="дней"
                 />
@@ -158,7 +138,7 @@ function Add() {
                   placeholder="Введите программу"
                   name="maraphonProgramm"
                   value={state.maraphonProgramm}
-                  onChange={(e) => handleMaraphonChange(e)}
+                  onChange={(e) => handleInputChange(e)}
                   style={{ width: '100%' }}
                 />
               </Form.Item>
@@ -168,17 +148,19 @@ function Add() {
                   placeholder="Введите цель"
                   name="maraphonCategory"
                   value={state.maraphonCategory}
-                  onChange={(e) => handleMaraphonChange(e)}
+                  onChange={(e) => handleInputChange(e)}
                   style={{ width: '100%' }}
                 />
               </Form.Item>
               <Form.Item label="Цель марафона">
                 <Select
                   mode="multiple"
+                  name="maraphonGoal"
                   style={{ width: '100%' }}
                   placeholder="Please select"
-                  defaultValue={['a10', 'c12']}
-                  onChange={handleChange}
+                  // defaultValue={['a10', 'c12']}
+                  value={state.maraphonGoal}
+                  onChange={handleSelectChange}
                 >
                   {children}
                 </Select>
@@ -197,11 +179,14 @@ function Add() {
                   placeholder="Введите цену"
                   name="maraphonPrice"
                   value={state.maraphonPrice}
-                  onChange={(e) => handleMaraphonChange(e)}
+                  onChange={(e) => handleInputChange(e)}
                   style={{ width: '200px' }}
                   addonAfter="рублей"
                 />
               </Form.Item>
+              <Button type="primary" htmlType="submit" className="login-form-button">
+                Добавить марафон
+              </Button>
             </Form>
           </Content>
         </Col>
@@ -239,7 +224,7 @@ function Add() {
           </Content>
         </Col>
       </Row>
-    </React.Fragment>
+    </Admin>
   );
 }
 

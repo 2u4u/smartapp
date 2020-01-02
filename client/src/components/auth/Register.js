@@ -7,7 +7,7 @@ const { Title } = Typography;
 const { Content, Sider } = Layout;
 
 const Register = (props) => {
-  const errors = useSelector(state => state.error);
+  // const errors = useSelector(state => state.error);
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
@@ -37,7 +37,7 @@ const Register = (props) => {
   }
 
   useEffect(() => {
-    if (isAuthenticated) props.history.push("/feed")
+    if (isAuthenticated) props.history.push("/admin")
   }, [props.history, isAuthenticated]);
 
   return (
