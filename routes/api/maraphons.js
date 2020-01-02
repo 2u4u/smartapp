@@ -73,13 +73,9 @@ router.post("/add",
 // @desk    Return all maraphons of exact user
 // @access  Public
 router.get("/all/:user", (req, res) => {
-  console.log("user", req.params.user)
   Maraphon
     .find({ user: req.params.user })
-    .then(maraphons => {
-      console.log("maraphons", maraphons)
-      return res.json(maraphons)
-    })
+    .then(maraphons => res.json(maraphons))
     .catch(err => console.log("Maraphons show for exact user all err -> ", err));
 });
 
@@ -89,11 +85,19 @@ router.get("/all/:user", (req, res) => {
 router.get("/all", (req, res) => {
   Maraphon
     .find()
-    .then(maraphons => {
-      console.log("maraphons", maraphons)
-      res.json(maraphons)
-    })
+    .then(maraphons => res.json(maraphons))
     .catch(err => console.log("Maraphons show all err -> ", err));
+});
+
+// @route   GET api/maraphons/detailed/:handle
+// @desk    Return maraphon details for :handle
+// @access  Public
+router.get("/detailed/:handle", (req, res) => {
+  console.log("req.params.handle", req.params.handle)
+  Maraphon
+    .findOne({ handle: req.params.handle })
+    .then(maraphon => res.json(maraphon))
+    .catch(err => console.log("Maraphon detailed err -> ", err));
 });
 
 // @route   POST api/posts/like/:id

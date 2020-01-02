@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ERRORS, LOADING, NOTIFICATION, LOAD_POST_TO_EDIT, SHOW_ALL_USER_MARAPHONS, SHOW_ALL_POSTS, SHOW_DETAILED_POST } from "./types";
+import { GET_ERRORS, LOADING, NOTIFICATION, LOAD_POST_TO_EDIT, SHOW_ALL_USER_MARAPHONS, SHOW_ALL_POSTS, SHOW_DETAILED_MARAPHON } from "./types";
 // import setAuthToken from "../utils/setAuthToken";
 // import jwt_token from "jwt-decode";
 
@@ -32,6 +32,26 @@ export const showUserMaraphons = (userId) => dispatch => {
   dispatch(updateUserMaraphons(userId));
 };
 
+// Show maraphon details
+export const showDetailedMaraphon = (handle) => dispatch => {
+  dispatch({ type: LOADING, payload: true })
+  console.log("showDetailedMaraphon handle", handle)
+  axios
+    .get(`/api/maraphons/detailed/${handle}`)
+    .then(res => {
+      dispatch({
+        type: SHOW_DETAILED_MARAPHON,
+        payload: res.data
+      })
+    })
+    .catch(err => {
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    }
+    );
+};
 // Show post to edit
 export const openEditPost = (id, history) => dispatch => {
   dispatch({ type: LOADING, payload: true })
@@ -120,26 +140,6 @@ export const showAllPosts = () => dispatch => {
     .then(res => {
       dispatch({
         type: SHOW_ALL_POSTS,
-        payload: res.data
-      })
-    })
-    .catch(err => {
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
-    }
-    );
-};
-
-// Show post detailed
-export const showDetailedPost = (user, handle) => dispatch => {
-  dispatch({ type: LOADING, payload: true })
-  axios
-    .get(`/api/posts/detailed/${user}/${handle}`)
-    .then(res => {
-      dispatch({
-        type: SHOW_DETAILED_POST,
         payload: res.data
       })
     })

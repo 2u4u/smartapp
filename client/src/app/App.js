@@ -16,6 +16,7 @@ import MaraphonsList from "../components/maraphons/List";
 import MaraphonNews from "../components/maraphons/News";
 import TrainingsAdd from "../components/trainings/Add";
 import TrainingsList from "../components/trainings/List";
+import MaraphonView from "../components/maraphons/View"
 
 import { PrivateRoute } from "../components/routing/PrivateRoute";
 
@@ -51,7 +52,8 @@ function App() {
         <PrivateRoute exact path="/admin/account" component={Account} />
         <PrivateRoute path={"/admin/maraphons/list"} component={MaraphonsList} />
         <PrivateRoute path={"/admin/maraphons/add"} component={MaraphonsAdd} />
-        <PrivateRoute path={"/admin/maraphons/news"} component={MaraphonNews} />
+        <PrivateRoute path={"/admin/maraphon/:handle"} component={MaraphonView} />
+        <PrivateRoute path={"/admin/maraphon/news"} component={MaraphonNews} />
         <PrivateRoute path={"/admin/trainings/list"} component={TrainingsList} />
         <PrivateRoute path={"/admin/trainings/add"} component={TrainingsAdd} />
       </Switch>

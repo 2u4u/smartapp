@@ -1,27 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import draftToHtml from 'draftjs-to-html';
 import { showUserMaraphons } from "../../actions/maraphonAction";
-import { convertFromRaw, ContentState } from 'draft-js';
 
 import Admin from "../admin/Admin"
 import { Row, Col, Icon, PageHeader, Card } from 'antd';
 
-// const { Meta } = Card;
-
 const routes = [
-  // {
-  //   path: 'index',
-  //   breadcrumbName: 'First-level Menu',
-  // },
   {
     path: 'first',
     breadcrumbName: 'Список марафонов',
   },
-  // {
-  //   path: 'second',
-  //   breadcrumbName: 'Марафон 1',
-  // },
 ];
 
 function List(props) {
@@ -32,14 +22,6 @@ function List(props) {
   useEffect(() => {
     dispatch(showUserMaraphons(userId));
   }, [userId, dispatch]);
-
-  if (maraphons.length) {
-    console.log("000", JSON.parse(maraphons[1].description))
-    console.log("111", convertFromRaw(JSON.parse(maraphons[1].description)))
-    // const blocksFromHTML = JSON.parse(maraphons[0].description);
-    // const state = ContentState.createFromBlockArray(blocksFromHTML);
-    // console.log("state", state)
-  }
 
   return (
     <Admin history={props.history}>
@@ -53,21 +35,6 @@ function List(props) {
       // subTitle="Не забудьте сохранить тренировку"
       />
       <Row gutter={[16, 16]} type="flex">
-        <Col span={6}>
-          <Card
-            title="Марафон 1"
-            style={{ height: "260px" }}
-            hoverable={true}
-            actions={[
-              <Link to="/admin/maraphons/news"><Icon type="warning" theme="twoTone" twoToneColor="#eb2f96" key="users" /></Link>,
-              <Link to="/admin/trainings/list"><Icon type="eye" key="view" /></Link>,
-              <Link to="/admin/trainings/add"><Icon type="edit" key="edit" /></Link>,
-            ]}
-          >
-            <div style={{ height: "105px", overflow: "hidden" }}>Ea ex elit amet eiusmod ullamco. Dolor officia nisi fugiat labore commodo enim qui aliquip do. Minim qui dolore nulla esse voluptate veniam mollit ea culpa id et. Irure occaecat do elit ut culpa labore esse deserunt non Lorem Lorem. Tempor excepteur dolore ipsum nisi magna non laborum laborum.</div>
-          </Card>
-        </Col>
-
         {maraphons ?
           maraphons.map(maraphon => (
             <Col span={6} key={maraphon._id}>
@@ -76,17 +43,18 @@ function List(props) {
                 style={{ height: "260px" }}
                 hoverable={true}
                 actions={[
-                  <Link to="/admin/maraphons/news"><Icon type="warning" theme="twoTone" twoToneColor="#eb2f96" key="users" /></Link>,
-                  <Link to="/admin/trainings/list"><Icon type="eye" key="view" /></Link>,
+                  <Link to="/admin/maraphon/news"><Icon type="warning" theme="twoTone" twoToneColor="#eb2f96" key="users" /></Link>,
+                  <Link to={`/admin/maraphon/${maraphon.handle}`}><Icon type="eye" key="view" /></Link>,
                   <Link to="/admin/trainings/add"><Icon type="edit" key="edit" /></Link>,
                 ]}
               >
-                <div style={{ height: "105px", overflow: "hidden" }}></div>
+                <div style={{ height: "105px", overflow: "hidden" }}
+                  dangerouslySetInnerHTML={{ __html: draftToHtml(JSON.parse(maraphon.description)) }} >
+                </div>
               </Card>
             </Col>
           )) : ""
         }
-
         <Col span={6}>
           <Link to="/admin/maraphons/add">
             <Card
@@ -98,7 +66,6 @@ function List(props) {
                 flexDirection: "column"
               }}
               hoverable={true}
-
             >
               <div style={{
                 display: "flex",
