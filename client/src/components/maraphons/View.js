@@ -33,10 +33,18 @@ function View(props) {
       {maraphon.description ?
         (<Content style={{ background: '#fff', padding: 24 }}>
           <Descriptions title={maraphon.name} layout="vertical" bordered>
-            <Descriptions.Item label="Описание марафона">
+            <Descriptions.Item label="Описание марафона" span={3}>
               <div
                 dangerouslySetInnerHTML={{ __html: draftToHtml(JSON.parse(maraphon.description)) }} >
               </div>
+            </Descriptions.Item>
+            <Descriptions.Item label="Длительность" >{maraphon.duration}</Descriptions.Item>
+            <Descriptions.Item label="Дата старта">{maraphon.start_date}</Descriptions.Item>
+            <Descriptions.Item label="Категория">{maraphon.category}</Descriptions.Item>
+            <Descriptions.Item label="Цели">{maraphon.goals}</Descriptions.Item>
+            <Descriptions.Item label="Цена">{maraphon.price} руб.</Descriptions.Item>
+            <Descriptions.Item label="Статус">
+              <Badge status="processing" text="Запущен" />
             </Descriptions.Item>
           </Descriptions>
         </Content>)

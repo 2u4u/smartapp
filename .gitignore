@@ -23,4 +23,4 @@ yarn-error.log*
 
 #my
 /client/_src
-/config/keys_prod.js
+/config/keys_dev.js
