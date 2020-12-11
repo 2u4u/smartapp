@@ -24,3 +24,5 @@ yarn-error.log*
 #my
 /client/_src
 /config/keys_dev.js
+/security/cert.key
+/security/cert.pem
